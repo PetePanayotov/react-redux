@@ -5,7 +5,7 @@ const initialState = {
   show: true,
 };
 
-export const counterSlice = createSlice({
+const counterSlice = createSlice({
   name: "counter",
   initialState,
   reducers: {
@@ -37,4 +37,8 @@ export const counterSlice = createSlice({
   },
 });
 
-export const counterActions = counterSlice.actions;
+export const counterStore = {
+  reducer: counterSlice.reducer,
+  actions: counterSlice.actions
+}
+

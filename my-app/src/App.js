@@ -1,65 +1,253 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { counterActions } from "./store/counter";
+import { authStore } from "./store/auth";
+import { counterStore } from "./store/counter";
+import { multiplierStore } from "./store/multiplier";
+import Cart from './components/Cart/Cart';
+import Layout from './components/Layout/Layout';
+import Products from './components/Shop/Products';
+import { countryStore } from "./store/country";
+import { weatherStore } from "./store/weather";
+
+// function App() {
+//   const [number, setNumber] = useState("");
+//   const [initialMultiplier , setInitialMultiplier] = useState(1)
+
+//   const { count, show , multiplier , isAuth} = useSelector((state) => ({
+//     count: state.counter.count,
+//     show: state.counter.show,
+//     multiplier: state.multiplierCounter.multiplier,
+//     isAuth: state.auth.isAuth
+//   }));
+//   const dispatch = useDispatch();
+
+//   const handleLogin = () => {
+//     dispatch(authStore.actions.login())
+//   }
+
+//   const handleLogout = () => {
+//     dispatch(authStore.actions.logout())
+//   }
+ 
+//   const handleChange = (event) => {
+//     const value = event.target.value;
+
+//     setNumber(value);
+//   };
+
+//   const handleIncrement = () => {
+//     dispatch(counterStore.actions.increment());
+//   };
+
+//   const handleDecrement = () => {
+//     dispatch(counterStore.actions.decrement()); //// counterStore.actions.increment() returns a object {type: "DECREMENT"}
+//   };
+//   const handleReset = () => {
+//     dispatch(counterStore.actions.reset()); //// counterStore.actions.increment() returns a object {type: "RESET"}
+//   };
+
+//   const toggle = () => {
+//     dispatch(counterStore.actions.toggle());
+//   };
+
+//   const handleIncraseBy = (value) => {
+//     if (!isNaN(value)) {
+//       return dispatch(counterStore.actions.increaseBy(Number(value)));
+//     }
+//   };
+
+//   const handleDecreaseBy = (value) => {
+//     if (!isNaN(value)) {
+//       return dispatch(counterStore.actions.decreaseBy(Number(value)));
+//     }
+//   };
+
+//   const handleMultiplierChange = (event) => {
+//     const value = event.target.value;
+//     setInitialMultiplier(value)
+//   }
+
+//   const handleMultiply = (value) => {
+
+//     if (!isNaN(value)) {
+//       return dispatch(multiplierStore.actions.multiply(Number(value)));
+//     }
+//   }
+
+//   const handleDevide = (value) => {
+
+//     if (!isNaN(value)) {
+//       return dispatch(multiplierStore.actions.divide(Number(value)));
+//     }
+//   }
+
+//   return (
+//     <div className="App">
+//       {
+//         isAuth ? 
+        
+//         <>
+//           <div>
+//             {show && <div>{count}</div>}
+//             <div>
+//               <button onClick={handleIncrement}>INCREMENT</button>
+//               <button onClick={handleDecrement}>DECREMENT</button>
+//               <button onClick={handleReset}>RESET</button>
+//               <button onClick={toggle}>TOGGLE</button>
+//             </div>
+//             <div>
+//               <button onClick={() => handleIncraseBy(number)}>INCREMENT BY</button>
+//               <button onClick={() => handleDecreaseBy(number)}>DECREMENT BY</button>
+//               <input value={number} onChange={handleChange} />
+//             </div>
+
+//           </div>
+
+//           <div>
+//             <div>
+//                 {multiplier}
+//             </div>
+//                 <button onClick={() => handleMultiply(initialMultiplier)}>MULTIPLY BY</button>
+//                 <button onClick={() => handleDevide(initialMultiplier)}>DEVIDE BY</button>
+//                 <input value={initialMultiplier} onChange={handleMultiplierChange} />
+
+//           </div>
+//           <button onClick={handleLogout}>
+//             LOGOUT
+//           </button>
+//         </>
+
+//         : <button onClick={handleLogin}>
+//           LOGIN
+//         </button>
+//       }
+//     </div>
+//   );
+// }
+
+// function App() {
+
+//   const {show} = useSelector(state => state.cart)
+//   return (
+//     <Layout>
+//       {
+//         show && <Cart />
+//       }
+//       <Products />
+//     </Layout>
+//   );
+// }
 
 function App() {
-  const [number, setNumber] = useState("");
 
-  const { count, show } = useSelector((state) => ({
-    count: state.counter.count,
-    show: state.counter.show,
-  }));
+  const [country , setCountry] = useState("");
+  const [city , setCity] = useState("")
+
   const dispatch = useDispatch();
 
-  const handleChange = (event) => {
+  const {isLoading , loaded , data: {name , capital , population} , error} = useSelector(state => state.country);
+
+  const {weatherIsLoading , weatherHasLoaded , weatherData , weatherError} = useSelector(state => ({
+
+    weatherIsLoading: state.weather.isLoading,
+    weatherHasLoaded: state.weather.loaded,
+    weatherData: state.weather.data,
+    weatherError: state.weather.error
+
+  }))
+
+  const handleChage = (event) => {
+    const {value} = event.target;
+
+    setCountry(value)
+  };
+
+  const handleCityName = (event) => {
     const value = event.target.value;
 
-    setNumber(value);
+    setCity(value)
+  }
+
+  // const getCountry = async (countryName) => {
+
+  //   try {
+  //     dispatch(countryStore.actions.fetchCountry({isLoading: true , loaded: false , data: {} , error: false}))
+      
+  //     const response = await fetch(`https://restcountries.eu/rest/v2/name/${countryName}`);
+  //     const data = await response.json();
+  
+  //     const {name , capital , population} = data[0];
+  //     dispatch(countryStore.actions.fetchCountry({isLoading: false , loaded: true , data: {name , capital , population} , error: false}));
+
+  //   } catch (error) {
+      
+  //     dispatch(countryStore.actions.fetchCountry({isLoading: false , loaded: true, data: {} , error: true }));
+  //   }
+
+  // };
+
+  const getCountry = (countryName) => {
+    dispatch(countryStore.actions.fetchCountry(countryName))
   };
 
-  const handleIncrement = () => {
-    dispatch(counterActions.increment());
-  };
+  const getWeatherData = (cityName) => {
+    dispatch(weatherStore.actions.fetchWeatherData(cityName))
+  }
 
-  const handleDecrement = () => {
-    dispatch(counterActions.decrement()); //// counterStore.actions.increment() returns a object {type: "DECREMENT"}
-  };
-  const handleReset = () => {
-    dispatch(counterActions.reset()); //// counterStore.actions.increment() returns a object {type: "RESET"}
-  };
-
-  const toggle = () => {
-    dispatch(counterActions.toggle());
-  };
-
-  const handleIncraseBy = (value) => {
-    if (!isNaN(value)) {
-      return dispatch(counterActions.increaseBy(Number(value)));
-    }
-  };
-
-  const handleDecreaseBy = (value) => {
-    if (!isNaN(value)) {
-      return dispatch(counterActions.decreaseBy(Number(value)));
-    }
-  };
-
-  return (
-    <div className="App">
-      {show && <div>{count}</div>}
+  return(
+    <div>
       <div>
-        <button onClick={handleIncrement}>INCREMENT</button>
-        <button onClick={handleDecrement}>DECREMENT</button>
-        <button onClick={handleReset}>RESET</button>
-        <button onClick={toggle}>TOGGLE</button>
+        <input value={country} onChange={handleChage}/>
+        <button onClick={() => getCountry(country)}>
+          GET
+        </button>
+        {
+          error && <h2>Something went wrong m8!</h2>
+        }
+        {
+          isLoading && <h2>Loading...</h2>
+        }
+        {
+
+        loaded && !error && 
+          <>
+            <div>
+              Country: {name}
+            </div>
+            <div>
+              Capital: {capital}
+            </div>
+            <div>
+              Population: {population}
+            </div>
+          </>
+        }
       </div>
+
       <div>
-        <button onClick={() => handleIncraseBy(number)}>INCREMENT BY</button>
-        <button onClick={() => handleDecreaseBy(number)}>DECREMENT BY</button>
-        <input value={number} onChange={handleChange} />
-      </div>
+        <input value={city} onChange={handleCityName}/>
+        <button onClick={() => getWeatherData(city)}>
+          GET
+        </button>
+      {
+        weatherError && <h2>Something went wrong m8!</h2>
+      }
+      {
+        weatherIsLoading && <h2>Loading...</h2>
+      }
+      {
+
+        weatherHasLoaded && !weatherError && 
+          <>
+            <div>
+              Current temperature in {weatherData.cityName} is {weatherData.temperature} C. 
+            </div>
+          </>
+      }
     </div>
-  );
+
+    </div>
+  )
 }
 
 export default App;
