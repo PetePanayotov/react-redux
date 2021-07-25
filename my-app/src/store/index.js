@@ -10,7 +10,7 @@ import { weatherStore } from "./weather";
 
 
 const sagaMiddleware = createSagaMiddleware()
-
+const middleware = [sagaMiddleware];
 
 export const store = configureStore({
   reducer: {
@@ -21,7 +21,7 @@ export const store = configureStore({
     country: countryStore.reducer,
     weather: weatherStore.reducer
   },
-  middleware: [sagaMiddleware]
+  middleware
 });
 
 

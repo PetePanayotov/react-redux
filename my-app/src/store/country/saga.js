@@ -1,5 +1,6 @@
-import {all , put , takeLatest} from "redux-saga/effects"
-import { FETCH_COUNTRY, SET_COUNTRY } from ".";
+import {all , call, put , takeLatest} from "redux-saga/effects"
+import { countryStore, FETCH_COUNTRY, SET_COUNTRY } from ".";
+import getCountryData from "./service";
 
 const pendingPayload = {
     isLoading: true,
@@ -23,44 +24,33 @@ const rejectedPayload = {
 }
 
 
-export function* fetchCountry(countryName) {
+function* fetchCountry(countryName) {
 
-    yield put({type: SET_COUNTRY , payload: pendingPayload})
+    yield put(countryStore.actions.setCountry(pendingPayload))
 
     try {
 
-        const response = yield fetch(`https://restcountries.eu/rest/v2/name/${countryName}`);
-        const data = yield response.json();
+        const response = yield call(() => getCountryData(countryName));
+
+        const data = response.data[0];
     
-        const {name , capital , population} = data[0];
-    
-        yield put(
-            {
-                type: SET_COUNTRY , 
-                payload: {
-                    ...fulfilledPayload , 
-                    data: {name , capital , population}
-                }
-            }
-        )
+        const {name , capital , population} = data;
+
+        yield put(countryStore.actions.setCountry({...fulfilledPayload ,  data: {name , capital , population}}))
         
     } catch (error) {
-        yield put({type: SET_COUNTRY , payload: rejectedPayload})
-    }
+        yield put(countryStore.actions.setCountry(rejectedPayload))
+    };
 
 };
 
-export function* watchFetchCountry() {
+export default function* watchFetchCountry() {
     yield takeLatest(FETCH_COUNTRY , (action) => {
         
         const countryName = action.payload;
 
         return fetchCountry(countryName)
-    })
+    });
 };
 
-export default function* countrySaga() {
-
-    yield all([watchFetchCountry()])
-}
 

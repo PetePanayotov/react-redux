@@ -104,7 +104,8 @@ const initialState = {
 // })
 
 
-const fetchCountry = (countryName) => ({type : FETCH_COUNTRY , payload: countryName})
+const fetchCountry = (countryName) => ({type : FETCH_COUNTRY , payload: countryName});
+const setCountry = (countryData) => ({type: SET_COUNTRY , payload: countryData});
 
 
 const reducer = (state = initialState , action) => {
@@ -124,10 +125,13 @@ const reducer = (state = initialState , action) => {
     
         default:
             return state
-    }
-}
+    };
+};
 
-const actions = {fetchCountry};
+const actions = {
+    fetchCountry, 
+    setCountry,
+};
 
 export const countryStore = {
     reducer,

@@ -169,7 +169,7 @@ function App() {
   }
 
   // const getCountry = async (countryName) => {
-
+      // !!! This is for the createSlice method. I dispatch the action with different payload to simulate the different state of the lifecucles of the promise
   //   try {
   //     dispatch(countryStore.actions.fetchCountry({isLoading: true , loaded: false , data: {} , error: false}))
       
@@ -197,6 +197,9 @@ function App() {
   return(
     <div>
       <div>
+        <h1>
+          Country 
+        </h1>
         <input value={country} onChange={handleChage}/>
         <button onClick={() => getCountry(country)}>
           GET
@@ -225,6 +228,9 @@ function App() {
       </div>
 
       <div>
+        <h1>
+          Weather
+        </h1>
         <input value={city} onChange={handleCityName}/>
         <button onClick={() => getWeatherData(city)}>
           GET
@@ -240,7 +246,7 @@ function App() {
         weatherHasLoaded && !weatherError && 
           <>
             <div>
-              Current temperature in {weatherData.cityName} is {weatherData.temperature} C. 
+              Current temperature in {weatherData.cityName} is {weatherData.temperature} &#8451;. 
             </div>
           </>
       }

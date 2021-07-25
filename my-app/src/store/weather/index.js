@@ -10,10 +10,7 @@ export const GET_WEATHER = "GET_WEATHER";
 export const SET_WEATHER = "SET_WEATHER";
 
 const fetchWeatherData = (cityName) => ({type: GET_WEATHER , payload: cityName});
-
-const actions = {
-    fetchWeatherData
-};
+const setWeatherData = (data) => ({type: SET_WEATHER , payload: data})
 
 
 const reducer = (state = initialState, action) => {
@@ -33,6 +30,11 @@ const reducer = (state = initialState, action) => {
         default:
             return state;
     }
+};
+
+const actions = {
+    fetchWeatherData,
+    setWeatherData,
 };
 
 export const weatherStore = {
